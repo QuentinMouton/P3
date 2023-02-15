@@ -1,0 +1,236 @@
+#btn-modif-profil,
+#btn-modif-projet,
+#edtion {
+  display: none;
+}
+#edition {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 59px;
+  /* margin-bottom: 35px; */
+  background-color: #000000;
+}
+#edition button {
+  border: 0;
+  width: 216px;
+  height: 38px;
+  border-radius: 60px;
+  background-color: #fff;
+}
+#mod-edition {
+  display: flex;
+  margin-right: 10px;
+}
+#edition img {
+  margin-right: 5px;
+  width: 15px;
+}
+
+#modif-profil,
+#modif-projet {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-weight: 400;
+  font-style: 14px;
+  width: 80px;
+}
+#modif-profil img,
+#modif-projet img {
+  width: 15px;
+  margin: 0;
+}
+#modif-profil {
+  margin: 15px 0 0 56.9922px;
+}
+#projets {
+  display: flex;
+  justify-content: center;
+}
+#modif-projet {
+  margin-left: 15px;
+  padding-top: 9px;
+}
+
+/* Boutton page d'accueille */
+#btn {
+  display: flex;
+  justify-content: space-around;
+  width: 44%;
+  margin-left: 28%;
+  margin-bottom: 30px;
+}
+.boutton {
+  font-family: "Syne";
+  font-weight: 700;
+  font-size: 16px;
+  background-color: #fff;
+  color: #1d6154;
+  border: 1px #1d6154 solid;
+  border-radius: 20px;
+}
+.boutton:hover {
+  background-color: #1d6154;
+  color: #fff;
+}
+/* Page login */
+a {
+  text-decoration: none;
+  color: #000000;
+}
+li a:hover {
+  color: #b1663c;
+}
+#login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+  margin-left: 30%;
+}
+#connexion {
+  display: flex;
+  flex-direction: column;
+}
+#connexion h3 {
+  margin-top: 20px;
+  color: red;
+}
+label {
+  margin: 20px 0 5px 0;
+}
+#mail,
+#password {
+  width: 250px;
+  height: 25px;
+  border: 0;
+  box-shadow: 0px 0px 12px #d9d9d9;
+}
+#btn-connexion {
+  margin: 15px 0 0 50px;
+  border-radius: 20px;
+  padding: 5px 0 5px 0;
+  width: 60%;
+  font-family: "Syne";
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  background-color: #1d6154;
+  border: 0;
+}
+#btn-connexion:active {
+  background: #0e2f28;
+}
+#oublie {
+  font-family: "Work Sans";
+  color: #3d3d3d;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+/* modal */
+
+.modal {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+}
+.modal-wrapper {
+  overflow: auto;
+  width: 45%;
+  max-width: calc(100vw - 20px);
+  max-height: calc(90vh - 20px);
+  padding: 30px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ferme-modal {
+  border: 0;
+  background: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.ferme-modal img {
+  width: 20px;
+}
+#titreModal {
+  font-weight: 400;
+  font-size: 26px;
+  font-family: "Work Sans";
+}
+#media {
+  display: grid;
+  /* justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; */
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  object-fit: cover;
+  width: 80%;
+  margin: 5% 10% 0 10%;
+  border-bottom: #b3b3b3 solid 1px;
+  padding-bottom: 70px;
+}
+/* #media figure {
+  margin: 0 5px 10px 0;
+} */
+/* #media img {
+  width: 78px;
+  height: 104px;
+} */
+#ajout-photo {
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  width: 45%;
+  padding: 10px 0 10px 0;
+  margin-top: 30px;
+  border: 0;
+  border-radius: 60px;
+  color: #fff;
+  background-color: #1d6154;
+}
+#suppr-galerie {
+  color: #d65353;
+  margin-top: 13px;
+}
+.media {
+  width: 78px;
+  height: 104px;
+}
+.fig {
+  position: relative;
+  margin-bottom: 10px;
+}
+.div-poubelle {
+  /* background-color: rgba(0, 0, 0); */
+  background: #000000 url("./icons/Vector.png") no-repeat center;
+  border-radius: 2px;
+  /* background-repeat: no-repeat; */
+  position: absolute;
+  top: 5px;
+  bottom: 0;
+  left: 59px;
+  right: 0;
+  width: 14px;
+  height: 14px;
+}
+.img-confirmation {
+  width: 200px;
+  height: 250px;
+}
