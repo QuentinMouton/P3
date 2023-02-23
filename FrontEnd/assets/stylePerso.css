@@ -169,30 +169,20 @@ label {
 .ferme-modal img {
   width: 20px;
 }
-#titreModal {
+#titreModal, #title-modal {
   font-weight: 400;
   font-size: 26px;
   font-family: "Work Sans";
 }
 #media {
   display: grid;
-  /* justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap; */
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 2%;
   object-fit: cover;
-  width: 80%;
-  margin: 5% 10% 0 10%;
+  width: 66%;
+  padding: 15px 0 70px 0;
   border-bottom: #b3b3b3 solid 1px;
-  padding-bottom: 70px;
 }
-/* #media figure {
-  margin: 0 5px 10px 0;
-} */
-/* #media img {
-  width: 78px;
-  height: 104px;
-} */
 #ajout-photo {
   font-family: "Syne", sans-serif;
   font-weight: 700;
@@ -209,19 +199,17 @@ label {
   color: #d65353;
   margin-top: 13px;
 }
-.media {
-  width: 78px;
-  height: 104px;
+ #media img/*, #confirme-img*/{ 
+  width: 90px;
+  height: 120px;
 }
 .fig {
   position: relative;
   margin-bottom: 10px;
 }
-.div-poubelle {
-  /* background-color: rgba(0, 0, 0); */
+.div-poubelle, .div-poubelle2 {
   background: #000000 url("./icons/Vector.png") no-repeat center;
   border-radius: 2px;
-  /* background-repeat: no-repeat; */
   position: absolute;
   top: 5px;
   bottom: 0;
@@ -233,4 +221,38 @@ label {
 .img-confirmation {
   width: 200px;
   height: 250px;
+}
+
+
+
+
+/* Modal profil */
+.modal-boite{
+  overflow: auto;
+  width: 600px;
+  max-width: calc(100vw - 20px);
+  max-height: calc(100vh - 20px);
+  padding: 20px;
+  background: #FFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#img-profil{
+  margin-top: 15px;
+}
+#img-profil img{
+  width: 78px;
+  height: 104px;
+  object-fit: cover;
+}
+#img-profil{
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+
+
+#btn-confirme{
+  display: flex;
 }

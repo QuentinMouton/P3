@@ -1,4 +1,5 @@
 import { generationMedia } from "./scriptAdmin.js";
+import { imgProfil } from "./modalProfil.js";
 
 //Recuperation de tous les travaux
 let works;
@@ -88,3 +89,4 @@ document.getElementById("btn-hot-resto").addEventListener("click", () => {
 
 //Genere les medias lors de l'ouverture de la modal
 generationMedia(works);
+imgProfil();

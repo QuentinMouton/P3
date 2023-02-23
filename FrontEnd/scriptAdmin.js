@@ -41,83 +41,88 @@ if (localStorage.getItem("token") != null) {
     btnModifier.removeAttribute("aria-hidden");
     btnModifier.setAttribute("aria-modal", "true");
     //Gestion de la suppression des medias lors du click sur la corbeille
+    let ids = [];
     const poubelles = document.getElementsByClassName("div-poubelle");
     for (let poubelle of poubelles) {
       poubelle.addEventListener("click", (e) => {
         e.preventDefault();
-        console.log(e.target.offsetParent.attributes[0].nodeValue);
         console.log(e);
-        let id = e.target.offsetParent.attributes[0].nodeValue;
-        fetch(`http://localhost:5678/api/works/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        // let img =
-        //   e.target.offsetParent.attributes[0].ownerElement.firstChild
-        //     .currentSrc;
-        // console.log(e);
-        // console.log("Je supprime !");
-        // const nouvelleGallerie = works.filter((work) => {
-        //   document.querySelector(".gallery").innerHTML = "";
-        //   document.querySelector(".media").innerHTML = "";
-        //   return work.id != id;
-        // });
-        // generationMedia(nouvelleGallerie);
-        // generationGallery(nouvelleGallerie);
+        //Recuperration de l'id du media à supprimer
+        ids.push(e.target.offsetParent.attributes[0].nodeValue);
+        console.log(ids);
+        //Suppression de la modal
+        document.getElementById("modal2").innerHTML = "";
+        //Creation modal "confirmation"
+        const ouvreModalConfirmation =
+          document.getElementById("btn-modif-projet");
+        //Creation de la boite
+        const confirmeDiv = document.createElement("div");
+        confirmeDiv.setAttribute("class", "modal-wrapper modal-stop");
+        //Creation de la modal
+        const confirmeAside = document.createElement("aside");
+        confirmeAside.setAttribute("class", "modal");
+        confirmeAside.setAttribute("aria-modal", "true");
+        // confirmeAside.setAttribute("aria-hideen", "true");
+        confirmeAside.setAttribute("role", "dialog");
+        confirmeAside.setAttribute("aria-labelby", "titlemodal");
+        //Creation bouton pour fermer
+        const confirmeBoutonFerme = document.createElement("button");
+        const confirmeImgFerme = document.createElement("img");
+        confirmeImgFerme.setAttribute("class", "ferme");
+        confirmeImgFerme.src = "./assets/icons/croix.png";
+        //Creation du titre
+        const confirmeTitle = document.createElement("h3");
+        confirmeTitle.setAttribute("id", "titlemodal");
+        confirmeTitle.innerText = "Es-tu sur de vouloir supprimer ?";
+        //Creation de la div qui accueille l'image
+        const confirmeDivMedia = document.createElement("div");
+        confirmeDivMedia.setAttribute("id", "confirme-img");
+        const confirmeImg = document.createElement("img");
+        confirmeImg.src = e.target.parentElement.firstChild.currentSrc;
+        confirmeImg.crossOrigin = "";
+        //Creation div bouton
+        const confirmeDivBouton = document.createElement("div");
+        confirmeDivBouton.setAttribute("id", "btn-confirme");
+        //Creation bouton "oui"
+        const confirmeBoutonOui = document.createElement("button");
+        confirmeBoutonOui.setAttribute("id", "valide-suppr");
+        confirmeBoutonOui.innerText = "oui";
+        //Creation bouton "non"
+        const confirmeBoutonNon = document.createElement("button");
+        confirmeBoutonNon.setAttribute("id", "annule-suppr");
+        confirmeBoutonNon.innerText = "non";
 
-        // const fenetreModal = document.querySelector(".modal-stop");
-        // fenetreModal.innerHTML = "";
-        // const imgConfirmation = document.createElement("img");
-        // imgConfirmation.src = img;
-        // imgConfirmation.crossOrigin = "";
-        // imgConfirmation.setAttribute("class", "img-confirmation");
-        // fenetreModal.appendChild(imgConfirmation);
-        // const boutonConfirmation = document.createElement("button");
-        // boutonConfirmation.setAttribute("class", "btn-confirmation");
-        // boutonConfirmation.innerText = "Confirmation";
-        // const boutonAnnule = document.createElement("button");
-        // boutonAnnule.setAttribute("class", "btn-annule");
-        // boutonAnnule.innerText = "Annuler";
-        // fenetreModal.appendChild(boutonConfirmation);
-        // fenetreModal.appendChild(boutonAnnule);
-        // document
-        //   .querySelector(".btn-confirmation")
-        //   .addEventListener("click", (e) => {
-        //     console.log(e);
-        //     console.log("Je supprime !");
-        //     const nouvelleGallerie = works.filter((work) => {
-        //       return work != id;
-        //     });
-        //     fermeModal;
-        //     generationGallery(nouvelleGallerie);
-        //   });
-
-        // document.getElementById("btn-objets").addEventListener("click", () => {
-        //   //Filtres les "Objets"
-        //   const objetsFiltres = works.filter((work) => {
-        //     return work.category.name === "Objets";
-        //   });
-        //   //Vidage de la "Gallerie"
-        //   document.querySelector(".gallery").innerHTML = "";
-        //   //Genreation de la "Gallerie" avec les "Objets"
-        //   generationGallery(objetsFiltres);
-        // });
-
-        // document.querySelector(".btn-annule").addEventListener("click", (e) => {
-        //   console.log(e);
-        //   console.log("J'annule");
-        // });
-
-        // fenetreModal.innerHTML = "";
-        // fenetreModal.
+        // ouvreModalConfirmation.appendChild(confirmeA);
+        ouvreModalConfirmation.appendChild(confirmeAside);
+        confirmeAside.appendChild(confirmeDiv);
+        confirmeDiv.appendChild(confirmeBoutonFerme);
+        confirmeBoutonFerme.appendChild(confirmeImgFerme);
+        confirmeDiv.appendChild(confirmeTitle);
+        confirmeDiv.appendChild(confirmeDivMedia);
+        confirmeDivMedia.appendChild(confirmeImg);
+        confirmeDiv.appendChild(confirmeDivBouton);
+        confirmeDivBouton.appendChild(confirmeBoutonOui);
+        confirmeDivBouton.appendChild(confirmeBoutonNon);
       });
     }
+
+    //Supprime le medias au click sur "publier changement"
+    const publierChangement = document.getElementById("publier-change");
+    publierChangement.addEventListener("click", () => {
+      for (let i in ids) {
+        console.log("Je supprime " + ids[i]);
+        // fetch(`http://localhost:5678/api/works/${id}`, {
+        //   method: "DELETE",
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // });
+      }
+    });
     modal = btnModifier;
     //Ajout du listener
     modal.addEventListener("click", fermeModal);
-    modal.querySelector("#ferme").addEventListener("click", fermeModal);
+    modal.querySelector(".ferme").addEventListener("click", fermeModal);
     modal
       .querySelector(".modal-stop")
       .addEventListener("click", stopPropagation);
@@ -167,7 +172,6 @@ export function generationMedia(works) {
     //Creation des balises img et ajout du contenu
     const imageElement = document.createElement("img");
     imageElement.src = work.imageUrl;
-    imageElement.setAttribute("class", "media");
     imageElement.crossOrigin = "";
     //Creation d'un div pour ajouter l'icone de corbeille
     const divPoubelle = document.createElement("div");
