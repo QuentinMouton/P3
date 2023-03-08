@@ -56,7 +56,6 @@ export async function imgProfil() {
   const listeImg = await recupListeImg.json();
   function generationProfil(listeImg) {
     for (let img of listeImg) {
-      console.log(img.src);
       const divImgProfil = document.getElementById("img-profil");
       const figureElement = document.createElement("figure");
       figureElement.dataset.id = img.id;
