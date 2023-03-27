@@ -2,10 +2,13 @@
 document.connexion.addEventListener("submit", async function (e) {
   //Bloque le rechargement auto de la page
   e.preventDefault();
+  console.log(this);
   //Creation de l'objet qui recupere le mail et le mdp du formulaire
+  const mail = document.getElementById("mail").value;
+  const password = document.getElementById("password").value;
   const user = {
-    email: this.email.value,
-    password: this.password.value,
+    email: mail,
+    password: password,
   };
   //Envoi de la requete pour connecter l'utilisateur
   await fetch("http://localhost:5678/api/users/login", {

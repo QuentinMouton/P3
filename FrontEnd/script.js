@@ -1,5 +1,5 @@
 // import { generationMedia } from "./scriptAdmin.js";
-import { imgProfil } from "./modalProfil.js";
+// import { imgProfil } from "./modalProfil.js";
 
 //Recuperation de tous les travaux
 let works;
@@ -87,6 +87,4 @@ document.getElementById("btn-hot-resto").addEventListener("click", () => {
   generationGallery(hotRestoFiltres);
 });
 
-//Genere les medias lors de l'ouverture de la modal
-// generationMedia(works);
-imgProfil();
+// imgProfil();

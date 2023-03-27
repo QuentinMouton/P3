@@ -128,9 +128,11 @@ table {
   border-spacing: 0;
 }
 /** end reset css**/
+#conteneur{
+   max-width: 1140px; 
+   margin: auto;
+}
 body {
-  max-width: 1140px;
-  margin: auto;
   font-family: "Work Sans";
   font-size: 14px;
 }

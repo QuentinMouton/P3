@@ -16,40 +16,43 @@
 </head>
 
 <body>
-  <header>
-    <div class="en-tete">
-      <h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
+  <div id="conteneur">
+    <header>
+      <div class="en-tete">
+        <h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
+        <nav>
+          <ul>
+            <li><a href="./index.html">projets</a></li>
+            <li>contact</li>
+            <li><a href="./login.html">login</a></li>
+            <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div id="login" class="flex fd-col ai-cent">
+        <h2>Log In</h2>
+        <form id="connexion" class="flex fd-col ai-cent" name="connexion" action="" method="POST">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="mail" class="border" required />
+          <label for="password">Mot de passe</label>
+          <input type="password" name="password" id="password" class="border" required />
+          <input id="btn-connexion" class="ff-syne col-white border" type="submit" name="connexion"
+            value="Se conneter" />
+        </form>
+        <a href="#" id="oublie" class="ff-worksans">Mot de passe oublié</a>
+      </div>
+    </main>
+
+    <footer id="foot-login">
       <nav>
         <ul>
-          <li><a href="./index.html">projets</a></li>
-          <li>contact</li>
-          <li><a href="./login.html">login</a></li>
-          <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
+          <li>Mentions Légales</li>
         </ul>
       </nav>
-    </div>
-  </header>
-  <main>
-    <div id="login">
-      <h2>Log In</h2>
-      <form id="connexion" name="connexion" action="" method="POST">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="mail" required />
-        <label for="password">Mot de passe</label>
-        <input type="password" name="password" id="password" required />
-        <input id="btn-connexion" type="submit" name="connexion" value="Se conneter" />
-      </form>
-      <a href="#" id="oublie">Mot de passe oublié</a>
-    </div>
-  </main>
-
-  <footer>
-    <nav>
-      <ul>
-        <li>Mentions Légales</li>
-      </ul>
-    </nav>
-  </footer>
+    </footer>
+  </div>
 </body>
 
 </html>
