@@ -1,8 +1,6 @@
-// import { generationMedia } from "./scriptAdmin.js";
-// import { imgProfil } from "./modalProfil.js";
-
-//Recuperation de tous les travaux
+//Declaration de la variable qui contiendra tous les travaux
 let works;
+//Recuperation de tous les travaux
 await fetch("http://localhost:5678/api/works")
   // Test si erreur lors de la recuperation
   .then((res) => {
@@ -39,6 +37,7 @@ export function generationGallery(works) {
   }
 }
 generationGallery(works);
+
 //Boutton "Tous"
 //Ajout de l'ecoute de l'evenement "click"
 document.getElementById("btn-tous").addEventListener("click", () => {
@@ -86,5 +85,3 @@ document.getElementById("btn-hot-resto").addEventListener("click", () => {
   //Genreation de la "Gallerie"
   generationGallery(hotRestoFiltres);
 });
-
-// imgProfil();

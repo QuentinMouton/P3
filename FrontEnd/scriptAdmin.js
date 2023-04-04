@@ -1,30 +1,34 @@
 import { generationGallery } from "./script.js";
-
-let works;
 const token = localStorage.getItem("token");
-let modalConfirm = null;
-let modal = null;
+let works;
 let worksFiltrer;
 let idWork;
 let ids = [];
+let formData = null;
+let newMedias = [];
 let file;
-
-//Requete pour recuperer tous les travaux
-await fetch("http://localhost:5678/api/works")
-  // Test si erreur lors de la recuperation
-  .then((res) => {
-    if (!res.ok) throw new Error("Erreur lors de la récupérration de travaux");
-    return res.json();
-  })
-  //Stock la reponse dans la variable "works"
-  .then((data) => {
-    works = data;
-    worksFiltrer = works;
-  })
-  //Affiche le message d'erreur
-  .catch((err) => {
-    console.error(err.message);
-  });
+let modalConfirm;
+let modalOuverte;
+function requete() {
+  //Requete pour recuperer tous les travaux
+  fetch("http://localhost:5678/api/works")
+    // Test si erreur lors de la recuperation
+    .then((res) => {
+      if (!res.ok)
+        throw new Error("Erreur lors de la récupérration des travaux");
+      return res.json();
+    })
+    //Stock la reponse dans la variable "works"
+    .then((data) => {
+      works = data;
+      worksFiltrer = data;
+    })
+    //Affiche le message d'erreur
+    .catch((err) => {
+      console.error(err.message);
+    });
+}
+requete();
 //Verifie que le token soit bien la
 if (token != null) {
   //Suppression lien "login"
@@ -39,7 +43,16 @@ if (token != null) {
 
   //Supprime le/les medias au click sur "publier changement"
   const publierChangement = document.getElementById("publier-change");
-  publierChangement.addEventListener("click", suppressionMedia);
+  publierChangement.addEventListener("click", (e) => {
+    if (ids.length > 0) {
+      suppressionMedia(e);
+      ids = [];
+    } else if (formData != null) {
+      EnvoiNouveauMedia(e);
+    } else {
+      return;
+    }
+  });
 
   //Creation du listener sur le bouton "Modifier" (Profil)
   document
@@ -95,6 +108,7 @@ function generationMedia() {
 
 //Fonction de la modal profil
 function ouvreModalProfil(e) {
+  modalOuverte = "profile";
   //Bloque le rechagement auto de la page
   e.preventDefault();
 
@@ -105,7 +119,7 @@ function ouvreModalProfil(e) {
   profilAside.setAttribute("class", "modal flex jc-cent ai-cent");
   profilAside.setAttribute("aria-modal", "true");
   profilAside.setAttribute("role", "dialog");
-  profilAside.setAttribute("aria-labelby", "titremodal");
+  profilAside.setAttribute("aria-labelby", "titreModal");
   //Ajout d'un event listener pour fermer la modal
   profilAside.addEventListener("click", fermeModalProfil);
   //Creation d'une div pour acceuillir les elements de la modal
@@ -154,7 +168,6 @@ function ouvreModalProfil(e) {
   profilBouttonSuppr.setAttribute("id", "suppr-galerie");
   profilBouttonSuppr.setAttribute("class", "border background");
   profilBouttonSuppr.innerText = "Supprimer la galerie";
-
   //Rattachement des elements creer au DOM
   ouvreModalProfil.appendChild(profilAside);
   profilAside.appendChild(profilDiv);
@@ -168,8 +181,10 @@ function ouvreModalProfil(e) {
   profilDiv.appendChild(profilBouttonAjout);
   profilDiv.appendChild(profilBouttonSuppr);
 }
+
 //Fonction pour creer la modal modif
 function ouvreModalModif(e) {
+  modalOuverte = "modif";
   //Bloque le rechargement auto de la page
   e.preventDefault();
 
@@ -180,7 +195,7 @@ function ouvreModalModif(e) {
   modifAside.setAttribute("class", "modal flex jc-cent ai-cent");
   modifAside.setAttribute("aria-modal", "true");
   modifAside.setAttribute("role", "dialog");
-  modifAside.setAttribute("aria-labelby", "titremodal");
+  modifAside.setAttribute("aria-labelby", "titreModal");
   //Ajout de event listener pour fermer la modal
   modifAside.addEventListener("click", fermeModal);
   //Creation d'une div pour acceuillir les elements de la modal
@@ -251,6 +266,7 @@ function ouvreModalModif(e) {
 //Fonction de la modal d'ajout
 let ajoutImgVierge;
 function ouvreModalAjout(e) {
+  modalOuverte = "ajout";
   //Bloque le rechargement auto de la page
   e.preventDefault();
   const ouvreModalAjout = document.getElementById("btn-modif-projet");
@@ -260,14 +276,14 @@ function ouvreModalAjout(e) {
   ajoutAside.setAttribute("id", "modal-ajout");
   ajoutAside.setAttribute("aria-modal", "true");
   ajoutAside.setAttribute("role", "dialog");
-  ajoutAside.setAttribute("aria-labelby", "titre-modal");
+  ajoutAside.setAttribute("aria-labelby", "titreModal");
   ajoutAside.addEventListener("click", fermeModalAjout);
 
   //Creation d'une div pour acceuillir les elements de la modal
   const ajoutDiv = document.createElement("div");
   ajoutDiv.setAttribute(
     "class",
-    "modal-wrapper modal-stop flex fd-col ai-cent ajoutModalNew"
+    "modal-wrapper modal-stop flex fd-col ai-cent"
   );
   ajoutDiv.addEventListener("click", stopPropagation);
   //Creation d'une div pour accueillir les boutons retour & fermer
@@ -303,7 +319,7 @@ function ouvreModalAjout(e) {
   });
   //Creation du titre de la modal
   const ajoutTitre = document.createElement("h3");
-  ajoutTitre.setAttribute("id", "titre-modal");
+  ajoutTitre.setAttribute("id", "titreModal");
   ajoutTitre.innerText = "Ajout photo";
   //Creation de la div qui accueille la nouvelle img
   const ajoutDivNouvelleImg = document.createElement("div");
@@ -385,9 +401,10 @@ function ouvreModalAjout(e) {
   ajoutInputValider.setAttribute("id", "ajout-valider");
   ajoutInputValider.setAttribute("class", "col-white border");
   ajoutInputValider.setAttribute("value", "Valider");
+  // ajoutInputValider.setAttribute("type", "submit");
   ajoutInputValider.innerText = "Valider";
   //Ajout d'un event listener pour envoyer le nouveau media
-  ajoutInputValider.addEventListener("click", async function (e) {
+  ajoutInputValider.addEventListener("click", function (e) {
     //Bloque le rechargement auto de la page
     e.preventDefault();
     //Recupere la valeur du champ titre et enleve les espaces
@@ -409,19 +426,16 @@ function ouvreModalAjout(e) {
       return;
     } else {
       //Creation de l'objet "FormData()" pour l'envoi du nouveau media à l'API
-      let formData = new FormData();
+      formData = new FormData();
       formData.append("title", titre);
       formData.append("image", image);
       formData.append("category", categorie);
-      //Requete d'envoi du nouveau media à l'API
-      await fetch("http://localhost:5678/api/works", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      // EnvoiNouveauMedia(formData);
+      fermeModalAjout();
+      const gallery = document.querySelector(".gallery");
+      gallery.innerHTML = "";
+      requete();
+      generationGallery(works);
     }
   });
 
@@ -492,6 +506,7 @@ function ouvreModalAjout(e) {
 
 //Fonction de la modal de confirmation
 function ouvreModalConfirmation(e) {
+  modalOuverte = "confirmation";
   const ouvreModalConfirmation = document.getElementById("btn-modif-projet");
   //Creation de la boite qui acceuil la modal
   const confirmeAside = document.createElement("aside");
@@ -499,7 +514,7 @@ function ouvreModalConfirmation(e) {
   confirmeAside.setAttribute("id", "modal-confirmation");
   confirmeAside.setAttribute("aria-modal", "true");
   confirmeAside.setAttribute("role", "dialog");
-  confirmeAside.setAttribute("aria-labelby", "titlemodal");
+  confirmeAside.setAttribute("aria-labelby", "titreModal");
   modalConfirm = confirmeAside;
   //Creation d'une div qui acceuil les element de la modal
   const confirmeDiv = document.createElement("div");
@@ -515,7 +530,7 @@ function ouvreModalConfirmation(e) {
   );
   //Creation du titre
   const confirmeTitre = document.createElement("h3");
-  confirmeTitre.setAttribute("id", "titlemodal");
+  confirmeTitre.setAttribute("id", "titreModal");
   confirmeTitre.innerText = "Es-tu sur de vouloir supprimer ?";
   //Creation de la div qui accueille l'image
   const confirmeDivMedia = document.createElement("div");
@@ -568,32 +583,44 @@ function ouvreModalConfirmation(e) {
 //Fonction pour fermer la modal de profil
 function fermeModalProfil() {
   const modalProfil = document.getElementById("modal-profil");
+  modalOuverte = "";
   modalProfil.remove();
 }
 //Fonction pour fermer la modal de modif projet
 function fermeModal() {
   const modalModif = document.getElementById("modal-modif");
+  modalOuverte = "";
   modalModif.remove();
 }
 
 //Fonction pour fermer la modal d'ajout
 function fermeModalAjout() {
   const modalAjout = document.getElementById("modal-ajout");
+  modalOuverte = "";
   modalAjout.remove();
 }
 
 //Fonction fermer la modal de confirmation
 function fermeModalConfirmation() {
   const modalConfirmation = document.getElementById("modal-confirmation");
+  modalOuverte = "";
   modalConfirmation.remove();
 }
 
 //Ajout d'un listener pour fermer la modal via la touche "Echap"
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape" || e.key === "Esc") {
-    const modal = document.getElementById("btn-modif-projet");
-    const aside = modal.querySelector("aside");
-    aside.remove();
+    if (modalOuverte === "profile") {
+      fermeModalProfil();
+    } else if (modalOuverte === "modif") {
+      fermeModal();
+    } else if (modalOuverte === "ajout") {
+      fermeModalAjout();
+    } else if (modalOuverte === "confirmation") {
+      fermeModalConfirmation();
+    } else {
+      return;
+    }
   }
 });
 
@@ -608,20 +635,6 @@ function supprMedia() {
       fermeModal();
       //Ouvre la modal pour confirmer la suppression
       ouvreModalConfirmation(e);
-    });
-  }
-}
-
-//Fonction suppression des medias
-function suppressionMedia() {
-  for (let i in ids) {
-    //Requete de suprression du/des medias selectionnes
-    fetch(`http://localhost:5678/api/works/${ids[i]}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
     });
   }
 }
@@ -650,7 +663,6 @@ function checkChamp() {
 //Fonction pour previsualiser l'image uploade
 function Previsualisation() {
   const regleRegex = /\.(jpe?g|png|gif|webp|jfif)$/i;
-  console.log(file);
   if (!regleRegex.test(file.name)) {
     alert(
       `Ce fichier n'est pas au bon format. \nVeuillez inserer un fichier au format jpg ou png.`
@@ -674,4 +686,42 @@ function Previsualisation() {
     };
     fileReader.readAsDataURL(file);
   }
+}
+
+//Fonction d'envoi du nouveau media à l'API
+function EnvoiNouveauMedia(e) {
+  e.preventDefault();
+  fetch("http://localhost:5678/api/works", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+  requete();
+  setTimeout(() => {
+    document.querySelector(".gallery").innerHTML = "";
+    generationGallery(works);
+  }, "2000");
+}
+
+//Fonction suppression des medias
+function suppressionMedia(e) {
+  e.preventDefault();
+  for (let i in ids) {
+    //Requete de suprression du/des medias selectionnes
+    fetch(`http://localhost:5678/api/works/${ids[i]}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+  requete();
+  setTimeout(() => {
+    document.querySelector(".gallery").innerHTML = "";
+    generationGallery(works);
+  }, "2000");
 }

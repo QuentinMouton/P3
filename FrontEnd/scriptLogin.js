@@ -2,7 +2,6 @@
 document.connexion.addEventListener("submit", async function (e) {
   //Bloque le rechargement auto de la page
   e.preventDefault();
-  console.log(this);
   //Creation de l'objet qui recupere le mail et le mdp du formulaire
   const mail = document.getElementById("mail").value;
   const password = document.getElementById("password").value;
