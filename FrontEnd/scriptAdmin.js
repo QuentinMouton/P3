@@ -1,32 +1,37 @@
+//Importation d'une fonction
 import { generationGallery } from "./script.js";
+//Stockage du token de connexion dans une variable
 const token = localStorage.getItem("token");
+//Creation des variables
 let works;
 let worksFiltrer;
 let idWork;
 let ids = [];
 let formData = null;
-let newMedias = [];
 let file;
 let modalConfirm;
 let modalOuverte;
-function requete() {
-  //Requete pour recuperer tous les travaux
-  fetch("http://localhost:5678/api/works")
-    // Test si erreur lors de la recuperation
-    .then((res) => {
-      if (!res.ok)
-        throw new Error("Erreur lors de la récupérration des travaux");
-      return res.json();
-    })
-    //Stock la reponse dans la variable "works"
-    .then((data) => {
+async function requete() {
+  //Test de la requete
+  try {
+    //Requete pour recuperer tous les travaux
+    let reponse = await fetch("http://localhost:5678/api/works");
+    //Si le status renvoye est 200 execute le reste du code
+    if (reponse.status === 200) {
+      let data = await reponse.json();
       works = data;
       worksFiltrer = data;
-    })
-    //Affiche le message d'erreur
-    .catch((err) => {
-      console.error(err.message);
-    });
+    }
+    //Si le status est autre creer les messages d'erreurs lies au status
+    else if (reponse.status === 500) {
+      throw new Error("Erreur inatendue");
+    } else {
+      throw new Error("Erreur inconnue");
+    }
+  } catch (error) {
+    //Message d'erreur si exeption levee par try
+    console.error(error.message);
+  }
 }
 requete();
 //Verifie que le token soit bien la
@@ -46,9 +51,8 @@ if (token != null) {
   publierChangement.addEventListener("click", (e) => {
     if (ids.length > 0) {
       suppressionMedia(e);
-      ids = [];
     } else if (formData != null) {
-      EnvoiNouveauMedia(e);
+      envoiNouveauMedia(e);
     } else {
       return;
     }
@@ -91,7 +95,7 @@ function generationMedia() {
     //Creation des balises img et ajout du contenu
     const imageElement = document.createElement("img");
     imageElement.src = work.imageUrl;
-    imageElement.crossOrigin = "";
+    imageElement.crossOrigin = "anonymous";
     //Creation d'un div pour ajouter l'icone de corbeille
     const divPoubelle = document.createElement("div");
     divPoubelle.setAttribute("class", "div-poubelle");
@@ -187,7 +191,6 @@ function ouvreModalModif(e) {
   modalOuverte = "modif";
   //Bloque le rechargement auto de la page
   e.preventDefault();
-
   const ouvreModalGalerie = document.getElementById("btn-modif-projet");
   //Creation de la boite qui acceuil la modal
   const modifAside = document.createElement("aside");
@@ -242,12 +245,8 @@ function ouvreModalModif(e) {
   modifBouttonSuppr.innerText = "Supprimer la galerie";
   //Ajout d'un event listener qui supprime tous les medias lors du click
   modifBouttonSuppr.addEventListener("click", (e) => {
-    for (let work of works) {
-      idWork = work.imageUrl;
-      ids.push(work.id);
-      fermeModal();
-      ouvreModalModif(e);
-    }
+    fermeModal();
+    ouvreModalConfirmSuppr(e);
   });
   //Rattachement des elements creer au DOM
   ouvreModalGalerie.appendChild(modifAside);
@@ -263,6 +262,98 @@ function ouvreModalModif(e) {
   supprMedia();
 }
 
+//Fonction de la modal de confirmation pour supprimer toute la galerie
+function ouvreModalConfirmSuppr(e) {
+  modalOuverte = "confirmSup";
+  //Bloque le rechargement auto de la page
+  e.preventDefault();
+  const ouvreModalConfirmSup = document.getElementById("btn-modif-projet");
+  //Creation de la boite qui acceuil la modal
+  const confirmSupAside = document.createElement("aside");
+  confirmSupAside.setAttribute("class", "modal flex jc-cent ai-cent");
+  confirmSupAside.setAttribute("id", "modal-conf-sup");
+  confirmSupAside.setAttribute("aria-modal", "true");
+  confirmSupAside.setAttribute("role", "dialog");
+  confirmSupAside.setAttribute("aria-labelby", "titreModal");
+  confirmSupAside.addEventListener("click", fermeModalConfirmSup);
+  //Creation d'une div pour acceuillir les elements de la modal
+  const confirmSupDiv = document.createElement("div");
+  confirmSupDiv.setAttribute(
+    "class",
+    "modal-wrapper modal-stop flex fd-col ai-cent"
+  );
+  confirmSupDiv.addEventListener("click", stopPropagation);
+  //Creation d'une div pour accueillir les boutons retour & fermer
+  const confirmSupDivRetourFermer = document.createElement("div");
+  confirmSupDivRetourFermer.setAttribute("id", "retour-fermer");
+  confirmSupDivRetourFermer.setAttribute("class", "flex jc-spabet");
+  //Creation du bouton retour
+  const confirmSupBoutonRetour = document.createElement("button");
+  confirmSupBoutonRetour.setAttribute("id", "retour-modal");
+  confirmSupBoutonRetour.setAttribute("class", "jc-fleend border background");
+  //Ajout de l'image pour le bouton retour
+  const confirmSupImgRetour = document.createElement("img");
+  confirmSupImgRetour.setAttribute("id", "retour");
+  confirmSupImgRetour.src = "./assets/icons/retour.png";
+  //Creation du bouton fermer
+  const confirmSupBoutonFerme = document.createElement("button");
+  confirmSupBoutonFerme.setAttribute(
+    "class",
+    "ferme-modal flex jc-fleend border background"
+  );
+  //Ajout de l'image pour le bouton fermer
+  const confirmSupImgFerme = document.createElement("img");
+  confirmSupImgFerme.setAttribute("class", "ferme");
+  confirmSupImgFerme.src = "./assets/icons/croix.png";
+  //Ajout d'un event listener pour fermer la modal lors du click
+  confirmSupImgFerme.addEventListener("click", () => {
+    fermeModalAjout();
+  });
+  //Creation du titre de la modal
+  const confirmSupTitre = document.createElement("h3");
+  confirmSupTitre.setAttribute("id", "titreModal");
+  confirmSupTitre.innerText =
+    "Es-tu sur de vouloir supprimer toutes la galerie ?";
+  //Creation d'une div pour les boutons
+  const confirmSupDivBouton = document.createElement("div");
+  confirmSupDivBouton.setAttribute("id", "btn-confirme");
+  confirmSupDivBouton.setAttribute("class", "flex fd-row jc-spaaro");
+  //Creation bouton "Valider"
+  const confirmSupBoutonOui = document.createElement("button");
+  confirmSupBoutonOui.setAttribute("id", "valide-suppr");
+  confirmSupBoutonOui.setAttribute("class", "ff-syne col-white border");
+  confirmSupBoutonOui.innerText = "Supprimer";
+  //Ajout d'un event listener pour recuperer les ids de tous les medias lors du click
+  confirmSupBoutonOui.addEventListener("click", () => {
+    for (let work of works) {
+      ids.push(work.id);
+    }
+    //Ferme la modal
+    fermeModalConfirmSup();
+  });
+  //Creation bouton "Annuler"
+  const confirmSupBoutonNon = document.createElement("button");
+  confirmSupBoutonNon.setAttribute("id", "annule-suppr");
+  confirmSupBoutonNon.setAttribute("class", "ff-syne col-white");
+  confirmSupBoutonNon.innerText = "Annuler";
+  //Ajout d'un event listener pour annuler la suppression lors du click
+  confirmSupBoutonNon.addEventListener("click", (e) => {
+    //Ferme la modal
+    fermeModalConfirmSup();
+    //Ouvre la modal principal
+    ouvreModalModif(e);
+  });
+  //Rattachement des elements creer au DOM
+  ouvreModalConfirmSup.appendChild(confirmSupAside);
+  confirmSupAside.appendChild(confirmSupDiv);
+  confirmSupDiv.appendChild(confirmSupDivRetourFermer);
+  confirmSupDivRetourFermer.appendChild(confirmSupImgRetour);
+  confirmSupDivRetourFermer.appendChild(confirmSupImgFerme);
+  confirmSupDiv.appendChild(confirmSupTitre);
+  confirmSupDiv.appendChild(confirmSupDivBouton);
+  confirmSupDivBouton.appendChild(confirmSupBoutonOui);
+  confirmSupDivBouton.appendChild(confirmSupBoutonNon);
+}
 //Fonction de la modal d'ajout
 let ajoutImgVierge;
 function ouvreModalAjout(e) {
@@ -278,7 +369,6 @@ function ouvreModalAjout(e) {
   ajoutAside.setAttribute("role", "dialog");
   ajoutAside.setAttribute("aria-labelby", "titreModal");
   ajoutAside.addEventListener("click", fermeModalAjout);
-
   //Creation d'une div pour acceuillir les elements de la modal
   const ajoutDiv = document.createElement("div");
   ajoutDiv.setAttribute(
@@ -397,17 +487,16 @@ function ouvreModalAjout(e) {
   ajoutChoix3.setAttribute("value", "3");
   ajoutChoix3.innerText = "Hotels & restaurants";
   //Creation du bouton Valider
-  const ajoutInputValider = document.createElement("button");
-  ajoutInputValider.setAttribute("id", "ajout-valider");
-  ajoutInputValider.setAttribute("class", "col-white border");
-  ajoutInputValider.setAttribute("value", "Valider");
-  // ajoutInputValider.setAttribute("type", "submit");
-  ajoutInputValider.innerText = "Valider";
+  const ajoutBoutonValider = document.createElement("button");
+  ajoutBoutonValider.setAttribute("id", "ajout-valider");
+  ajoutBoutonValider.setAttribute("class", "col-white border");
+  ajoutBoutonValider.setAttribute("value", "Valider");
+  ajoutBoutonValider.innerText = "Valider";
   //Ajout d'un event listener pour envoyer le nouveau media
-  ajoutInputValider.addEventListener("click", function (e) {
+  ajoutBoutonValider.addEventListener("click", function (e) {
     //Bloque le rechargement auto de la page
     e.preventDefault();
-    //Recupere la valeur du champ titre et enleve les espaces
+    //Recupere la valeur du champ titre et enleve les espaces inutiles
     let titre = ajoutChampTitre.value;
     titre = titre.trim();
     //Recupere la valeur du champ categorie
@@ -421,7 +510,7 @@ function ouvreModalAjout(e) {
     } else if (titre === "") {
       alert("Veuillez mettre un titre");
       return;
-    } else if (categorie === "0") {
+    } else if (categorie < 1 || categorie > 3) {
       alert("Veulliez selectionner une categorie");
       return;
     } else {
@@ -430,12 +519,10 @@ function ouvreModalAjout(e) {
       formData.append("title", titre);
       formData.append("image", image);
       formData.append("category", categorie);
-      // EnvoiNouveauMedia(formData);
+      //Ferme la modal d'ajout
       fermeModalAjout();
-      const gallery = document.querySelector(".gallery");
-      gallery.innerHTML = "";
-      requete();
-      generationGallery(works);
+      //Ouvre la modal modif
+      ouvreModalModif(e);
     }
   });
 
@@ -462,7 +549,7 @@ function ouvreModalAjout(e) {
   ajoutChampCategorie.appendChild(ajoutChoix1);
   ajoutChampCategorie.appendChild(ajoutChoix2);
   ajoutChampCategorie.appendChild(ajoutChoix3);
-  ajoutDiv.appendChild(ajoutInputValider);
+  ajoutDiv.appendChild(ajoutBoutonValider);
 
   //Gestion du Drag&Drop
   const zone = document.getElementById("nouvelle-img");
@@ -477,7 +564,7 @@ function ouvreModalAjout(e) {
     //Selection du premier fichier
     file = this.files[0];
     //Previsualistation de l'image
-    Previsualisation();
+    previsualisation();
   });
   //Ajout d'un event listener lors du "Drag" sur la zone
   zone.addEventListener(
@@ -498,7 +585,7 @@ function ouvreModalAjout(e) {
       //Recupere l'image
       file = e.dataTransfer.files[0];
       //Previsualistation de l'image
-      Previsualisation();
+      previsualisation();
     },
     false
   );
@@ -538,7 +625,7 @@ function ouvreModalConfirmation(e) {
   //Creation de l'image
   const confirmeImg = document.createElement("img");
   confirmeImg.src = e.target.parentElement.firstChild.currentSrc;
-  confirmeImg.crossOrigin = "";
+  confirmeImg.crossOrigin = "anonymous";
   //Creation d'une div pour les boutons
   const confirmeDivBouton = document.createElement("div");
   confirmeDivBouton.setAttribute("id", "btn-confirme");
@@ -593,6 +680,12 @@ function fermeModal() {
   modalModif.remove();
 }
 
+//Fonction pour fermer la modal de confirmation de suppression de la galerie
+function fermeModalConfirmSup() {
+  const modalConfirmSup = document.getElementById("modal-conf-sup");
+  modalOuverte = "";
+  modalConfirmSup.remove();
+}
 //Fonction pour fermer la modal d'ajout
 function fermeModalAjout() {
   const modalAjout = document.getElementById("modal-ajout");
@@ -618,6 +711,8 @@ window.addEventListener("keydown", (e) => {
       fermeModalAjout();
     } else if (modalOuverte === "confirmation") {
       fermeModalConfirmation();
+    } else if (modalOuverte === "confirmSup") {
+      fermeModalConfirmSup();
     } else {
       return;
     }
@@ -661,13 +756,17 @@ function checkChamp() {
 }
 
 //Fonction pour previsualiser l'image uploade
-function Previsualisation() {
+function previsualisation() {
   const regleRegex = /\.(jpe?g|png|gif|webp|jfif)$/i;
   if (!regleRegex.test(file.name)) {
     alert(
       `Ce fichier n'est pas au bon format. \nVeuillez inserer un fichier au format jpg ou png.`
     );
     zone.classList.remove("active");
+  } else if (file.size > 4194304) {
+    alert(
+      "Ce fichier est trop grand. \nVeuillez inserer un fichier de moins de 4Mo"
+    );
   } else {
     let fileReader = new FileReader();
     fileReader.onload = () => {
@@ -689,39 +788,85 @@ function Previsualisation() {
 }
 
 //Fonction d'envoi du nouveau media à l'API
-function EnvoiNouveauMedia(e) {
+async function envoiNouveauMedia(e) {
   e.preventDefault();
-  fetch("http://localhost:5678/api/works", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData,
-  });
-  requete();
-  setTimeout(() => {
-    document.querySelector(".gallery").innerHTML = "";
-    generationGallery(works);
-  }, "2000");
+  //Test de la requete
+  try {
+    //Requete d'envoi du nouveau media
+    let reponse = await fetch("http://localhost:5678/api/works", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+    //Si le status renvoye est 201 execute le reste du code
+    if (reponse.status === 201) {
+      setTimeout(() => {
+        requete();
+      }, "100");
+      setTimeout(() => {
+        document.querySelector(".gallery").innerHTML = "";
+        generationGallery(works);
+      }, "1000");
+    }
+    //Si le status est autre que 201 creer les messages d'erreurs lies au status
+    else if (reponse.status === 400) {
+      throw new Error("Mauvaise requete");
+    } else if (reponse.status === 401) {
+      throw new Error("Non authorisé");
+    } else if (reponse.status === 500) {
+      throw new Error("Erreur inatendu");
+    } else {
+      throw new Error("Erreur inconnue");
+    }
+  } catch (error) {
+    //Message d'erreur si exeption levee par try
+    alert(error.message);
+  } finally {
+    //Vide le formData
+    formData.delete("title");
+    formData.delete("image");
+    formData.delete("category");
+  }
 }
 
 //Fonction suppression des medias
-function suppressionMedia(e) {
+async function suppressionMedia(e) {
   e.preventDefault();
   for (let i in ids) {
-    //Requete de suprression du/des medias selectionnes
-    fetch(`http://localhost:5678/api/works/${ids[i]}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    //Test de la requete
+    try {
+      //Requete de suprression du/des medias selectionnes
+      let reponse = await fetch(`http://localhost:5678/api/works/${ids[i]}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      //Si le status renvoye est 204 execute le reste du code
+      if (reponse.status === 204) {
+        requete();
+        setTimeout(() => {
+          document.querySelector(".gallery").innerHTML = "";
+          generationGallery(works);
+        }, "1000");
+      }
+      //Si le status est autre creer les messages d'erreurs lies au status
+      else if (reponse.status === 401) {
+        throw new Error("Non authorisé");
+      } else if (reponse.status === 500) {
+        throw new Error("Comportement inattendu");
+      } else {
+        throw new Error("Erreur inconnue");
+      }
+    } catch (error) {
+      //Message d'erreur si exeption levee par try
+      alert(error.message);
+    }
   }
-  requete();
-  setTimeout(() => {
-    document.querySelector(".gallery").innerHTML = "";
-    generationGallery(works);
-  }, "2000");
+  //Vide l'array ids
+  ids = [];
 }

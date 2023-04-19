@@ -9,27 +9,57 @@ document.connexion.addEventListener("submit", async function (e) {
     email: mail,
     password: password,
   };
-  //Envoi de la requete pour connecter l'utilisateur
-  await fetch("http://localhost:5678/api/users/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  })
-    //Test de la reponse de l'API
-    .then((res) => {
-      if (!res.ok)
-        throw new Error("Erreur dans l'identifiant ou le mot de passe");
-      return res.json();
-    })
-    //Si identifiants bon stock le token et redirige
-    .then((data) => {
+  //Test de la requete
+  try {
+    //Requete pour connecter l'utilisateur
+    let reponse = await fetch("http://localhost:5678/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    //Si le status renvoye est 200 execute le reste du code
+    if (reponse.status === 200) {
+      let data = await reponse.json();
       localStorage.setItem("token", data.token);
       window.location = "index.html";
-    })
-    //Si identifiants pas bon affiche le message d'erreur
-    .catch((err) => {
-      this.firstElementChild.textContent = err.message;
-    });
+    }
+    //Si le status est autre creer les messages d'erreurs lies au status
+    else if (reponse.status === 401) {
+      throw new Error("Non autorisé");
+    } else if (reponse.status === 404) {
+      throw new Error("Erreur dans l'identifiant ou le mot de passe");
+    } else {
+      throw new Error("Erreur inconnue \nVeuillez réessayer");
+    }
+  } catch (error) {
+    //Message d'erreur si exeption levee par try
+    alert(error.message);
+  } finally {
+    //Vide l'objet user
+    user = {};
+  }
 });
+//   catch (!res.ok) {
+//     throw new Error("Erreur dans l'identifiant ou le mot de passe");
+//   return res.json();
+//   }
+//   finally {
+//     (data) => {
+//       localStorage.setItem("token", data.token);
+//       window.location = "index.html";
+//   }
+// }
+
+//     //Test de la reponse de l'API
+//     .then((res) => {
+//       if ()
+//     })
+//     //Si identifiants bon stock le token et redirige
+//     })
+//     //Si identifiants pas bon affiche le message d'erreur
+//     .catch((err) => {
+//       this.firstElementChild.textContent = err.message;
+//     });
+// });

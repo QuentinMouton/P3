@@ -1,22 +1,26 @@
 //Declaration de la variable qui contiendra tous les travaux
 let works;
-//Recuperation de tous les travaux
-await fetch("http://localhost:5678/api/works")
-  // Test si erreur lors de la recuperation
-  .then((res) => {
-    if (!res.ok) throw new Error("Erreur lors de la récupérration de travaux");
-    return res.json();
-  })
-  //Stock la reponse dans la variable "works"
-  .then((data) => {
+//Test de la requete
+try {
+  //Requete pour recuperer tous les travaux
+  let reponse = await fetch("http://localhost:5678/api/works");
+  //Si le status renvoye est 200 execute le reste du code
+  if (reponse.status === 200) {
+    let data = await reponse.json();
     works = data;
-  })
-  //Affiche le message d'erreur
-  .catch((err) => {
-    console.error(err.message);
-  });
+  }
+  //Si le status est autre creer les messages d'erreurs lies au status
+  else if (reponse.status === 500) {
+    throw new Error("Erreur inatendue");
+  } else {
+    throw new Error("Erreur inconnue");
+  }
+} catch (error) {
+  //Message d'erreur si exeption levee par try
+  alert(error.message);
+}
 
-//Generation automatique de la galerie
+//Generation de la galerie
 export function generationGallery(works) {
   for (let work of works) {
     //Recuperation de l'element du DOM qui accueil les articles
@@ -24,10 +28,11 @@ export function generationGallery(works) {
     //Creation d'une balise dediee aux articles
     const figureElement = document.createElement("figure");
     figureElement.dataset.id = work.id;
-    //Creation des balises img et figcaption et ajout de leurs contenu
+    //Creation des balises img
     const imageElement = document.createElement("img");
     imageElement.src = work.imageUrl;
-    imageElement.crossOrigin = "";
+    imageElement.crossOrigin = "anonymous";
+    //Creation de la legende des images
     const figcaptionElement = document.createElement("figcaption");
     figcaptionElement.innerText = work.title;
     //Rattachement des balises au DOM
@@ -52,6 +57,7 @@ document.getElementById("btn-tous").addEventListener("click", () => {
 document.getElementById("btn-objets").addEventListener("click", () => {
   //Filtres les "Objets"
   const objetsFiltres = works.filter((work) => {
+    //Retourne les medias de la categorie objets
     return work.category.name === "Objets";
   });
   //Vidage de la "Gallerie"
@@ -65,6 +71,7 @@ document.getElementById("btn-objets").addEventListener("click", () => {
 document.getElementById("btn-appartements").addEventListener("click", () => {
   //Filtres les "Appartements"
   const appartementsFiltres = works.filter((work) => {
+    //Retourne les medias de la categorie appartements
     return work.category.name === "Appartements";
   });
   //Vidage de la "Gallerie" avec les "Appartements"
@@ -78,6 +85,7 @@ document.getElementById("btn-appartements").addEventListener("click", () => {
 document.getElementById("btn-hot-resto").addEventListener("click", () => {
   //Filtres les "Hotels & restaurants"
   const hotRestoFiltres = works.filter((work) => {
+    //Retourne les medias de la categorie hotels & restaurants
     return work.category.name === "Hotels & restaurants";
   });
   //Vidage de la "Gallerie" avec les "Hotels & restaurants"

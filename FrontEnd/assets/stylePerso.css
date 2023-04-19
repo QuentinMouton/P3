@@ -39,7 +39,7 @@
   border: 0;
 }
 .background{
-  background: 0;
+  background: #fff;
 }
 #btn-modif-profil,
 #btn-modif-projet,
@@ -68,7 +68,7 @@
 #modif-profil,
 #modif-projet {
   font-weight: 400;
-  font-style: 14px;
+  font-size: 14px;
   width: 80px;
 }
 #modif-profil img,
