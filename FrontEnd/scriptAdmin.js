@@ -9,7 +9,6 @@ let idWork;
 let ids = [];
 let formData = null;
 let file;
-let modalConfirm;
 let modalOuverte;
 async function requete() {
   //Test de la requête
@@ -611,7 +610,6 @@ function ouvreModalConfirmation(e) {
   confirmeAside.setAttribute("aria-modal", "true");
   confirmeAside.setAttribute("role", "dialog");
   confirmeAside.setAttribute("aria-labelby", "titreModal");
-  modalConfirm = confirmeAside;
   //Creation d'une div qui accueil les element de la modal
   const confirmeDiv = document.createElement("div");
   confirmeDiv.setAttribute(
