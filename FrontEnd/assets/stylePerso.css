@@ -42,8 +42,7 @@
   background: #fff;
 }
 #btn-modif-profil,
-#btn-modif-projet,
-#edtion {
+#btn-modif-projet {
   display: none;
 }
 #edition {
@@ -84,13 +83,13 @@
   padding-top: 9px;
 }
 
-/* Boutton page d'accueille */
+/* Bouton page d'accueille */
 #btn {
   width: 55%;
   margin-left: 25%;
   margin-bottom: 30px;
 }
-.boutton {
+.bouton {
   font-family: "Syne";
   font-weight: 700;
   font-size: 16px;
@@ -101,7 +100,7 @@
   border: 1px #1d6154 solid;
   border-radius: 20px;
 }
-.boutton:hover {
+.bouton:hover {
   background-color: #1d6154;
   color: #fff;
 }
@@ -172,7 +171,7 @@ li a:hover {
 .ferme-modal img, #retour-modal img{
   width: 20px;
 }
-#titreModal, #title-modal, #titlemodal, #titre-modal{
+#titreModal{
   font-weight: 400;
   font-size: 26px;
   font-family: "Work Sans";

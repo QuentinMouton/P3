@@ -1,22 +1,22 @@
 //Declaration de la variable qui contiendra tous les travaux
 let works;
-//Test de la requete
+//Test de la requête
 try {
-  //Requete pour recuperer tous les travaux
+  //Requête pour récupérer tous les travaux
   let reponse = await fetch("http://localhost:5678/api/works");
-  //Si le status renvoye est 200 execute le reste du code
+  //Si le status renvoyé est 200 execute le reste du code
   if (reponse.status === 200) {
     let data = await reponse.json();
     works = data;
   }
-  //Si le status est autre creer les messages d'erreurs lies au status
+  //Si le status est autre créer les messages d'erreurs lies au status
   else if (reponse.status === 500) {
-    throw new Error("Erreur inatendue");
+    throw new Error("Erreur inattendue");
   } else {
     throw new Error("Erreur inconnue");
   }
 } catch (error) {
-  //Message d'erreur si exeption levee par try
+  //Message d'erreur si exception levee par try
   alert(error.message);
 }
 
@@ -25,14 +25,14 @@ export function generationGallery(works) {
   for (let work of works) {
     //Recuperation de l'element du DOM qui accueil les articles
     const divGallery = document.querySelector(".gallery");
-    //Creation d'une balise dediee aux articles
+    //Creation d'une balise dédiée aux articles
     const figureElement = document.createElement("figure");
     figureElement.dataset.id = work.id;
     //Creation des balises img
     const imageElement = document.createElement("img");
     imageElement.src = work.imageUrl;
     imageElement.crossOrigin = "anonymous";
-    //Creation de la legende des images
+    //Creation de la légende des images
     const figcaptionElement = document.createElement("figcaption");
     figcaptionElement.innerText = work.title;
     //Rattachement des balises au DOM
@@ -43,53 +43,53 @@ export function generationGallery(works) {
 }
 generationGallery(works);
 
-//Boutton "Tous"
-//Ajout de l'ecoute de l'evenement "click"
+//Bouton "Tous"
+//Ajout de l’écoute de l’événement "click"
 document.getElementById("btn-tous").addEventListener("click", () => {
-  //Vidage de la "Gallerie"
+  //Vidage de la "Galerie"
   document.querySelector(".gallery").innerHTML = "";
-  //Genreation de la "Gallerie"
+  //Génération de la "Galerie"
   generationGallery(works);
 });
 
-//Boutton "Objets"
-//Ajout de l'ecoute de l'evenement "click"
+//Bouton "Objets"
+//Ajout de l’écoute de l’événement "click"
 document.getElementById("btn-objets").addEventListener("click", () => {
   //Filtres les "Objets"
   const objetsFiltres = works.filter((work) => {
-    //Retourne les medias de la categorie objets
+    //Retourne les medias de la catégorie objets
     return work.category.name === "Objets";
   });
-  //Vidage de la "Gallerie"
+  //Vidage de la "Galerie"
   document.querySelector(".gallery").innerHTML = "";
-  //Genreation de la "Gallerie" avec les "Objets"
+  //Generation de la "Galerie" avec les "Objets"
   generationGallery(objetsFiltres);
 });
 
-//Boutton "Appartements"
-//Ajout de l'ecoute de l'evenement "click"
+//Bouton "Appartements"
+//Ajout de l’écoute de l’événement "click"
 document.getElementById("btn-appartements").addEventListener("click", () => {
   //Filtres les "Appartements"
   const appartementsFiltres = works.filter((work) => {
-    //Retourne les medias de la categorie appartements
+    //Retourne les medias de la catégorie appartements
     return work.category.name === "Appartements";
   });
-  //Vidage de la "Gallerie" avec les "Appartements"
+  //Vidage de la "Galerie" avec les "Appartements"
   document.querySelector(".gallery").innerHTML = "";
-  //Genreation de la "Gallerie"
+  //Génération de la "Galerie"
   generationGallery(appartementsFiltres);
 });
 
-//Boutton "Hotels & restaurants"
-//Ajout de l'ecoute de l'evenement "click"
+//Bouton "Hotels & restaurants"
+//Ajout de l’écoute de l’événement "click"
 document.getElementById("btn-hot-resto").addEventListener("click", () => {
   //Filtres les "Hotels & restaurants"
   const hotRestoFiltres = works.filter((work) => {
-    //Retourne les medias de la categorie hotels & restaurants
+    //Retourne les medias de la catégorie hotels & restaurants
     return work.category.name === "Hotels & restaurants";
   });
-  //Vidage de la "Gallerie" avec les "Hotels & restaurants"
+  //Vidage de la "Galerie" avec les "Hotels & restaurants"
   document.querySelector(".gallery").innerHTML = "";
-  //Genreation de la "Gallerie"
+  //Génération de la "Galerie"
   generationGallery(hotRestoFiltres);
 });
