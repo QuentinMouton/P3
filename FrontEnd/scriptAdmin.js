@@ -2,7 +2,6 @@
 import { generationGallery } from "./script.js";
 //Stockage du token de connexion dans une variable
 const token = localStorage.getItem("token");
-console.log("🚀 ~ file: scriptAdmin.js:5 ~ token:", token);
 //Creation des variables
 let works;
 let worksFiltrer;
@@ -77,6 +76,10 @@ if (token != null) {
 //Supprime le token lors de la déconnexion
 document.getElementById("lien-logout").addEventListener("click", () => {
   localStorage.removeItem("token");
+  console.log(
+    "🚀 ~ file: scriptAdmin.js:80 ~ document.getElementById ~ localStorage:",
+    localStorage
+  );
 });
 
 //Fonction pour générer les medias dans la modal modif
