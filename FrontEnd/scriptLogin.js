@@ -41,25 +41,3 @@ document.connexion.addEventListener("submit", async function (e) {
     user = {};
   }
 });
-//   catch (!res.ok) {
-//     throw new Error("Erreur dans l'identifiant ou le mot de passe");
-//   return res.json();
-//   }
-//   finally {
-//     (data) => {
-//       localStorage.setItem("token", data.token);
-//       window.location = "index.html";
-//   }
-// }
-
-//     //Test de la reponse de l'API
-//     .then((res) => {
-//       if ()
-//     })
-//     //Si identifiants bon stock le token et redirige
-//     })
-//     //Si identifiants pas bon affiche le message d'erreur
-//     .catch((err) => {
-//       this.firstElementChild.textContent = err.message;
-//     });
-// });

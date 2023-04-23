@@ -75,10 +75,6 @@ if (token != null) {
 //Supprime le token lors de la déconnexion
 document.getElementById("lien-logout").addEventListener("click", () => {
   localStorage.removeItem("token");
-  console.log(
-    "🚀 ~ file: scriptAdmin.js:80 ~ document.getElementById ~ localStorage:",
-    localStorage
-  );
 });
 
 //Fonction pour générer les medias dans la modal modif
@@ -504,7 +500,7 @@ function ouvreModalAjout(e) {
   ajoutBoutonValider.addEventListener("click", function (e) {
     //Bloque le rechargement auto de la page
     e.preventDefault();
-    //Recupere la valeur du champ titre et enlevé les espaces inutiles
+    //Récupère la valeur du champ titre et enlevé les espaces inutiles
     let titre = ajoutChampTitre.value;
     titre = titre.trim();
     //Récupère la valeur du champ catégorie
@@ -522,7 +518,7 @@ function ouvreModalAjout(e) {
       alert("Veuillez sélectionner une categorie");
       return;
     } else {
-      //Creation de l'objet "FormData()" pour l'envoi du nouveau media à l'API
+      //Création de l'objet "FormData" pour l'envoi du nouveau media à l'API
       formData = new FormData();
       formData.append("title", titre);
       formData.append("image", image);

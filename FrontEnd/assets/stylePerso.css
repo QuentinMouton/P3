@@ -149,6 +149,12 @@ li a:hover {
   color: #3d3d3d;
   text-decoration: underline;
 }
+#foot-login {
+  bottom: 0;
+  left: 0;
+  right: 320px;
+  position: absolute;
+}
 
 /* modal */
 .modal {
